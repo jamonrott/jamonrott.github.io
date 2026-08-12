@@ -79,16 +79,17 @@
       align-items: center;
     }
 
+    /* Exact standard A4 aspect ratio (210mm x 297mm -> 595px x 842px) */
     .card {
-      width: 500px;
-      height: 650px;
+      width: 595px;
+      height: 842px;
       background-color: #fdfdfd;
       background-image: 
         linear-gradient(#e5e5e5 1px, transparent 1px),
         linear-gradient(90deg, #e5e5e5 1px, transparent 1px);
       background-size: 16px 16px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      padding: 30px;
+      padding: 40px;
       position: relative;
       display: flex;
       flex-direction: column;
@@ -100,7 +101,7 @@
     .card-title {
       text-align: center;
       font-family: 'Great Vibes', cursive;
-      font-size: 3.8rem;
+      font-size: 4.2rem;
       color: #111;
       line-height: 1;
       margin-top: 5px;
@@ -111,17 +112,17 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     /* Photo Frame */
     .photo-container {
-	margin-left: 7px;
+      margin-left: 7px;
       position: relative;
-      width: 230px;
-      height: 270px;
+      width: 270px;
+      height: 330px;
       background: #fff;
-      padding: 12px 12px 35px 12px;
+      padding: 14px 14px 40px 14px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 12px 24px rgba(0,0,0,0.18);
       transform: rotate(-1.5deg);
     }
@@ -155,16 +156,16 @@
     /* Date & Sub-title Badge */
     .date-badge {
       text-align: center;
-      width: 180px;
-	  padding-top: 35px;
+      width: 200px;
+      padding-top: 45px;
     }
     .big-day {
-      font-size: 4.2rem;
+      font-size: 4.8rem;
       font-weight: 800;
       line-height: 0.9;
     }
     .big-month {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 800;
       letter-spacing: 2px;
       text-transform: uppercase;
@@ -172,11 +173,11 @@
     }
     .divider {
       border-bottom: 2px dashed #333;
-      margin: 10px 0;
+      margin: 12px 0;
     }
     .script-event {
       font-family: 'Great Vibes', cursive;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       line-height: 1.1;
     }
 
@@ -189,60 +190,61 @@
 
     /* Wishes & Illustration */
     .wishes-box {
-      width: 160px;
+      width: 190px;
       font-size: 0.95rem;
       font-weight: 700;
       line-height: 1.3;
+      padding-bottom: 10px;
     }
     
     #iconContainer {
       width: 100%;
-      height: 80px;
+      height: 90px;
       display: flex;
       align-items: flex-end;
       justify-content: center;
     }
     
     .card-icon {
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
     }
 
     /* Calendar Widget */
     .calendar-container {
-      width: 250px;
+      width: 280px;
     }
     .cal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .cal-month {
       font-family: 'Caveat', cursive;
-      font-size: 1.8rem;
+      font-size: 2rem;
     }
     .cal-year {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
     }
     .cal-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       text-align: center;
-      font-size: 0.75rem;
-      gap: 3px;
+      font-size: 0.8rem;
+      gap: 4px;
     }
     .cal-days-header {
       background: #000;
       color: #fff;
-      padding: 3px 0;
+      padding: 4px 0;
       font-weight: 700;
-      font-size: 0.65rem;
+      font-size: 0.7rem;
     }
     .cal-cell {
-      padding: 4px 0;
+      padding: 5px 0;
       font-weight: 600;
       position: relative;
     }
@@ -256,8 +258,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border: 2px solid #e53e3e;
       border-radius: 50%;
     }
@@ -371,7 +373,7 @@
       <input type="range" id="photoPosY" min="0" max="100" step="1" value="50">
     </div>
 
-    <button id="downloadPdfBtn" class="download-btn">Download as PDF</button>
+    <button id="downloadPdfBtn" class="download-btn">Download A4 PDF</button>
   </div>
 
   <!-- Card Canvas -->
@@ -384,7 +386,7 @@
         <div class="photo-container">
           <div class="tape"></div>
           <div class="photo-frame">
-            <img id="displayPhoto" src="https://via.placeholder.com/230x270?text=Upload+Photo" alt="User Photo">
+            <img id="displayPhoto" src="https://via.placeholder.com/270x330?text=Upload+Photo" alt="User Photo">
           </div>
         </div>
 
@@ -601,11 +603,12 @@
     photoPosXInput.addEventListener('input', updateCard);
     photoPosYInput.addEventListener('input', updateCard);
 
-    // High-DPI PDF Export via dom-to-image + jsPDF
+    // High-DPI Standard A4 PDF Export (210mm x 297mm)
     downloadPdfBtn.addEventListener('click', () => {
-      downloadPdfBtn.textContent = 'Generating PDF...';
+      downloadPdfBtn.textContent = 'Generating A4 PDF...';
       downloadPdfBtn.disabled = true;
 
+      // Render canvas at 3x scale for crisp print resolution
       const scale = 3;
       const width = cardCanvas.offsetWidth;
       const height = cardCanvas.offsetHeight;
@@ -621,22 +624,26 @@
         }
       }).then(dataUrl => {
         const { jsPDF } = window.jspdf;
+        
+        // Exact standard A4 dimensions in millimeters
         const pdf = new jsPDF({
           orientation: 'portrait',
-          unit: 'px',
-          format: [width, height]
+          unit: 'mm',
+          format: 'a4'
         });
 
-        pdf.addImage(dataUrl, 'PNG', 0, 0, width, height);
+        // Fit image perfectly onto standard A4 sheet (210mm x 297mm)
+        pdf.addImage(dataUrl, 'PNG', 0, 0, 210, 297);
+        
         const filename = (eventTitleInput.value || 'card').toLowerCase().replace(/\s+/g, '_');
-        pdf.save(`${filename}.pdf`);
+        pdf.save(`${filename}_A4.pdf`);
 
-        downloadPdfBtn.textContent = 'Download as PDF';
+        downloadPdfBtn.textContent = 'Download A4 PDF';
         downloadPdfBtn.disabled = false;
       }).catch(err => {
         console.error(err);
-        alert('Could not export PDF. Make sure all images are locally loaded or CORS-accessible.');
-        downloadPdfBtn.textContent = 'Download as PDF';
+        alert('Could not export PDF. Ensure images are locally uploaded or CORS-enabled.');
+        downloadPdfBtn.textContent = 'Download A4 PDF';
         downloadPdfBtn.disabled = false;
       });
     });
