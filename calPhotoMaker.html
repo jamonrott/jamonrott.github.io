@@ -12,7 +12,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       background: #eef2f5;
       display: flex;
       min-height: 100vh;
@@ -79,7 +79,6 @@
       align-items: center;
     }
 
-    /* Exact standard A4 aspect ratio (210mm x 297mm -> 595px x 842px) */
     .card {
       width: 595px;
       height: 842px;
@@ -93,18 +92,32 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      font-family: 'Montserrat', sans-serif;
+      justify-content: flex-start;
+      font-family: Arial, sans-serif;
     }
 
-    /* Top Title */
+    /* Top Title Header */
+    .title-header-container {
+      width: 100%;
+      margin-top: 5px;
+    }
     .card-title {
-      text-align: center;
       font-family: 'Great Vibes', cursive;
       font-size: 4.2rem;
       color: #111;
       line-height: 1;
-      margin-top: 5px;
+      text-align: center;
+      white-space: pre-wrap;
+    }
+    .card-subtitle {
+      font-family: Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #444;
+      margin-top: 12px;
+      letter-spacing: 0.5px;
+      text-align: center;
+      white-space: pre-wrap;
     }
 
     /* Middle Layout */
@@ -112,7 +125,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 15px;
+      margin-top: 35px;
     }
 
     /* Photo Frame */
@@ -122,7 +135,7 @@
       width: 270px;
       height: 330px;
       background: #fff;
-      padding: 14px 14px 40px 14px;
+      padding: 14px 14px 10px 14px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 12px 24px rgba(0,0,0,0.18);
       transform: rotate(-1.5deg);
     }
@@ -130,7 +143,7 @@
       position: absolute;
       top: -10px;
       left: -15px;
-      width: 70px;
+      width: 75px;
       height: 22px;
       background: rgba(198, 137, 88, 0.75);
       transform: rotate(-15deg);
@@ -179,6 +192,7 @@
       font-family: 'Great Vibes', cursive;
       font-size: 2.5rem;
       line-height: 1.1;
+      white-space: pre-wrap;
     }
 
     /* Bottom Section */
@@ -186,28 +200,40 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      margin-top: auto;
     }
 
-    /* Wishes & Illustration */
+    /* Wishes & Illustration Box */
     .wishes-box {
-      width: 190px;
+      width: 220px;
       font-size: 0.95rem;
-      font-weight: 700;
-      line-height: 1.3;
-      padding-bottom: 10px;
+      font-weight: 500;
+      line-height: 1.5;
+      text-align: center;
+      white-space: pre-wrap;
+      word-break: break-word;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    #displayWishes {
+      margin-bottom: 10px;
     }
     
     #iconContainer {
       width: 100%;
-      height: 90px;
+      height: auto;
+      min-height: 45px;
       display: flex;
       align-items: flex-end;
       justify-content: center;
     }
     
     .card-icon {
-      width: 80px;
-      height: 80px;
+      width: 95px;
+      height: 95px;
       object-fit: contain;
     }
 
@@ -269,33 +295,73 @@
 
   <!-- Input Controls -->
   <div class="controls">
-    <h2>Card Settings</h2>
-    
+    <h2>Settings</h2>
+
+    <!-- Custom Font File Upload -->
     <div class="input-group">
-      <label for="eventTitle">Event Title</label>
+      <label for="customFontUpload">Custom Font (.ttf, .otf, .woff)</label>
+      <input type="file" id="customFontUpload" accept=".ttf,.otf,.woff,.woff2">
+    </div>
+    
+    <!-- Title Controls -->
+    <div class="input-group">
+      <label for="eventTitle">Title</label>
       <input type="text" id="eventTitle" value="Happy Birthday">
     </div>
 
     <div class="input-group">
-      <label for="titleFontSelect">Title / Script Font</label>
-      <select id="titleFontSelect">
-        <option value="'Great Vibes', cursive" selected>Great Vibes</option>
-        <option value="'Caveat', cursive">Caveat</option>
-        <option value="'Dancing Script', cursive">Dancing Script</option>
-        <option value="'Pacifico', cursive">Pacifico</option>
-        <option value="'Cinzel', serif">Cinzel (Classic)</option>
-      </select>
+      <label for="titleFontSize">
+        Title Font Size 
+        <span id="titleFontSizeVal">4.2rem</span>
+      </label>
+      <input type="range" id="titleFontSize" min="2" max="6" step="0.1" value="4.2">
     </div>
 
     <div class="input-group">
-      <label for="wishesFontSelect">Wishes Font</label>
-      <select id="wishesFontSelect">
-        <option value="'Montserrat', sans-serif" selected>Montserrat (Modern Clean)</option>
-        <option value="'Caveat', cursive">Caveat (Handwritten)</option>
-        <option value="'Dancing Script', cursive">Dancing Script (Script)</option>
-        <option value="'Playfair Display', serif">Playfair Display (Serif)</option>
-        <option value="'Poppins', sans-serif">Poppins (Rounded)</option>
-      </select>
+      <label for="titleFontSelect">Title Font</label>
+      <select id="titleFontSelect" class="font-dropdown"></select>
+    </div>
+
+    <!-- Subtitle Controls -->
+    <div class="input-group">
+      <label for="eventSubtitle">Subtitle</label>
+      <input type="text" id="eventSubtitle" value="My Lovely Kid">
+    </div>
+
+    <div class="input-group">
+      <label for="subtitleMarginTop">
+        Subtitle Spacing
+        <span id="subtitleMarginTopVal">12px</span>
+      </label>
+      <input type="range" id="subtitleMarginTop" min="-30" max="80" step="1" value="12">
+    </div>
+
+    <div class="input-group">
+      <label for="subtitleFontSize">
+        Subtitle Font Size 
+        <span id="subtitleFontSizeVal">1.1rem</span>
+      </label>
+      <input type="range" id="subtitleFontSize" min="0.6" max="2.5" step="0.05" value="1.1">
+    </div>
+
+    <div class="input-group">
+      <label for="subtitleFontSelect">Subtitle Font</label>
+      <select id="subtitleFontSelect" class="font-dropdown"></select>
+    </div>
+
+    <!-- Date Script Event Title Controls -->
+    <div class="input-group">
+      <label for="scriptLineHeight">
+        Date Script Line Height
+        <span id="scriptLineHeightVal">1.1</span>
+      </label>
+      <input type="range" id="scriptLineHeight" min="0.5" max="2.5" step="0.05" value="1.1">
+    </div>
+
+    <!-- Wishes Controls -->
+    <div class="input-group">
+      <label for="wishesText">Wishes Text</label>
+      <textarea id="wishesText">Best wishes for your special day</textarea>
     </div>
 
     <div class="input-group">
@@ -307,15 +373,11 @@
     </div>
 
     <div class="input-group">
-      <label for="wishesAlignSelect">Wishes Text Alignment</label>
-      <select id="wishesAlignSelect">
-        <option value="center" selected>Center</option>
-        <option value="left">Left</option>
-        <option value="right">Right</option>
-        <option value="justify">Justify</option>
-      </select>
+      <label for="wishesFontSelect">Wishes Font</label>
+      <select id="wishesFontSelect" class="font-dropdown"></select>
     </div>
 
+    <!-- Decorative & Media Controls -->
     <div class="input-group">
       <label for="iconSelect">Decorative Icon</label>
       <select id="iconSelect">
@@ -335,13 +397,8 @@
     </div>
 
     <div class="input-group">
-      <label for="eventDate">Event Date</label>
+      <label for="eventDate">Date</label>
       <input type="date" id="eventDate" value="2024-12-11">
-    </div>
-
-    <div class="input-group">
-      <label for="wishesText">Wishes Text</label>
-      <textarea id="wishesText">Best wishes for your special day</textarea>
     </div>
 
     <div class="input-group">
@@ -373,14 +430,17 @@
       <input type="range" id="photoPosY" min="0" max="100" step="1" value="50">
     </div>
 
-    <button id="downloadPdfBtn" class="download-btn">Download A4 PDF</button>
+    <button id="downloadPdfBtn" class="download-btn">Download</button>
   </div>
 
-  <!-- Card Canvas -->
+  <!-- Card Workspace -->
   <div class="preview-area">
     <div class="card" id="cardCanvas">
       
-      <div class="card-title" id="displayTitle">Happy Birthday</div>
+      <div class="title-header-container">
+        <div class="card-title" id="displayTitle">Happy Birthday</div>
+        <div class="card-subtitle" id="displaySubtitle">My Lovely Kid</div>
+      </div>
 
       <div class="middle-section">
         <div class="photo-container">
@@ -417,12 +477,113 @@
   </div>
 
   <script>
+    const fontOptions = [
+      { label: "Arial (System Sans-Serif)", value: "Arial, Helvetica, sans-serif" },
+      { label: "Georgia (System Serif)", value: "Georgia, serif" },
+      { label: "Times New Roman (System)", value: "'Times New Roman', Times, serif" },
+      { label: "Trebuchet MS (System Clean)", value: "'Trebuchet MS', sans-serif" },
+      { label: "Verdana (System Sans)", value: "Verdana, Geneva, sans-serif" },
+      { label: "Comic Sans MS (System Casual)", value: "'Comic Sans MS', cursive, sans-serif" },
+      { label: "Impact (System Bold)", value: "Impact, Charcoal, sans-serif" },
+      { label: "Courier New (System Monospace)", value: "'Courier New', Courier, monospace" },
+      { label: "Great Vibes (Script)", value: "'Great Vibes', cursive" },
+      { label: "Caveat (Handwritten)", value: "'Caveat', cursive" },
+      { label: "Dancing Script (Script)", value: "'Dancing Script', cursive" },
+      { label: "Pacifico (Script)", value: "'Pacifico', cursive" },
+      { label: "Cinzel (Classic Serif)", value: "'Cinzel', serif" },
+      { label: "Montserrat (Modern)", value: "'Montserrat', sans-serif" }
+    ];
+
+    function populateFontDropdowns() {
+      const fontSelects = document.querySelectorAll('.font-dropdown');
+      fontSelects.forEach(select => {
+        const currentVal = select.value;
+        select.innerHTML = '';
+        fontOptions.forEach(opt => {
+          const optionEl = document.createElement('option');
+          optionEl.value = opt.value;
+          optionEl.textContent = opt.label;
+          select.appendChild(optionEl);
+        });
+        if (currentVal) select.value = currentVal;
+      });
+    }
+
+    populateFontDropdowns();
+
+    // Custom Font Upload & Base64 Style Injection
+    const customFontUpload = document.getElementById('customFontUpload');
+
+    customFontUpload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        const dataUrl = event.target.result;
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9]/g, "_");
+        const fontName = `CustomFont_${cleanName}`;
+
+        let format = 'truetype';
+        if (file.name.endsWith('.otf')) format = 'opentype';
+        else if (file.name.endsWith('.woff')) format = 'woff';
+        else if (file.name.endsWith('.woff2')) format = 'woff2';
+
+        // Inject explicit @font-face CSS rule so dom-to-image can capture it
+        let customStyles = document.getElementById('dynamicCustomFonts');
+        if (!customStyles) {
+          customStyles = document.createElement('style');
+          customStyles.id = 'dynamicCustomFonts';
+          document.head.appendChild(customStyles);
+        }
+
+        const fontRule = `
+          @font-face {
+            font-family: '${fontName}';
+            src: url('${dataUrl}') format('${format}');
+            font-weight: normal;
+            font-style: normal;
+          }
+        `;
+        customStyles.appendChild(document.createTextNode(fontRule));
+
+        // Wait until document finishes registering font
+        await document.fonts.ready;
+
+        const fontVal = `'${fontName}', sans-serif`;
+        const fontLabel = `Uploaded: ${file.name}`;
+
+        if (!fontOptions.some(opt => opt.value === fontVal)) {
+          fontOptions.unshift({ label: fontLabel, value: fontVal });
+          populateFontDropdowns();
+        }
+
+        updateCard();
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    // Controls Elements
     const eventTitleInput = document.getElementById('eventTitle');
+    const titleFontSizeInput = document.getElementById('titleFontSize');
+    const titleFontSizeValDisplay = document.getElementById('titleFontSizeVal');
     const titleFontSelect = document.getElementById('titleFontSelect');
-    const wishesFontSelect = document.getElementById('wishesFontSelect');
+
+    const eventSubtitleInput = document.getElementById('eventSubtitle');
+    const subtitleMarginTopInput = document.getElementById('subtitleMarginTop');
+    const subtitleMarginTopValDisplay = document.getElementById('subtitleMarginTopVal');
+    const subtitleFontSizeInput = document.getElementById('subtitleFontSize');
+    const subtitleFontSizeValDisplay = document.getElementById('subtitleFontSizeVal');
+    const subtitleFontSelect = document.getElementById('subtitleFontSelect');
+
+    const scriptLineHeightInput = document.getElementById('scriptLineHeight');
+    const scriptLineHeightValDisplay = document.getElementById('scriptLineHeightVal');
+
+    const wishesTextInput = document.getElementById('wishesText');
     const wishesFontSizeInput = document.getElementById('wishesFontSize');
     const fontSizeValDisplay = document.getElementById('fontSizeVal');
-    const wishesAlignSelect = document.getElementById('wishesAlignSelect');
+    const wishesFontSelect = document.getElementById('wishesFontSelect');
     
     const iconSelect = document.getElementById('iconSelect');
     const customIconGroup = document.getElementById('customIconGroup');
@@ -430,7 +591,6 @@
     let customIconUrl = '';
 
     const eventDateInput = document.getElementById('eventDate');
-    const wishesTextInput = document.getElementById('wishesText');
     const photoUploadInput = document.getElementById('photoUpload');
     
     const photoZoomInput = document.getElementById('photoZoom');
@@ -444,6 +604,7 @@
 
     const cardCanvas = document.getElementById('cardCanvas');
     const displayTitle = document.getElementById('displayTitle');
+    const displaySubtitle = document.getElementById('displaySubtitle');
     const displayScriptTitle = document.getElementById('displayScriptTitle');
     const displayDay = document.getElementById('displayDay');
     const displayMonth = document.getElementById('displayMonth');
@@ -453,6 +614,11 @@
     const calMonthName = document.getElementById('calMonthName');
     const calYearNum = document.getElementById('calYearNum');
     const calendarGrid = document.getElementById('calendarGrid');
+
+    // Default font values
+    titleFontSelect.value = "'Great Vibes', cursive";
+    subtitleFontSelect.value = "Arial, Helvetica, sans-serif";
+    wishesFontSelect.value = "Arial, Helvetica, sans-serif";
 
     const monthNames = ["January", "February", "March", "April", "May", "June", 
                         "July", "August", "September", "October", "November", "December"];
@@ -487,19 +653,38 @@
     };
 
     function updateCard() {
+      // Title updates
       const title = eventTitleInput.value || "Special Event";
       displayTitle.textContent = title;
       displayScriptTitle.textContent = title;
-
       displayTitle.style.fontFamily = titleFontSelect.value;
       displayScriptTitle.style.fontFamily = titleFontSelect.value;
+
+      displayTitle.style.fontSize = titleFontSizeInput.value + 'rem';
+      titleFontSizeValDisplay.textContent = titleFontSizeInput.value + 'rem';
+
+      // Subtitle updates
+      const subtitle = eventSubtitleInput.value;
+      displaySubtitle.textContent = subtitle;
+      displaySubtitle.style.fontSize = subtitleFontSizeInput.value + 'rem';
+      subtitleFontSizeValDisplay.textContent = subtitleFontSizeInput.value + 'rem';
+      displaySubtitle.style.fontFamily = subtitleFontSelect.value;
+
+      // Subtitle Top Spacing
+      displaySubtitle.style.marginTop = subtitleMarginTopInput.value + 'px';
+      subtitleMarginTopValDisplay.textContent = subtitleMarginTopInput.value + 'px';
+
+      // Script Line Height update
+      displayScriptTitle.style.lineHeight = scriptLineHeightInput.value;
+      scriptLineHeightValDisplay.textContent = scriptLineHeightInput.value;
+
+      // Wishes updates
       displayWishes.style.fontFamily = wishesFontSelect.value;
       displayWishes.style.fontSize = wishesFontSizeInput.value + 'rem';
       fontSizeValDisplay.textContent = wishesFontSizeInput.value + 'rem';
-      displayWishes.style.textAlign = wishesAlignSelect.value;
-
       displayWishes.textContent = wishesTextInput.value;
 
+      // Icon updates
       const selectedIcon = iconSelect.value;
       if (selectedIcon === 'none') {
         customIconGroup.style.display = 'none';
@@ -516,6 +701,7 @@
         iconContainer.innerHTML = svgIcons[selectedIcon] || '';
       }
 
+      // Photo positioning updates
       const zoom = photoZoomInput.value;
       const posX = photoPosXInput.value;
       const posY = photoPosYInput.value;
@@ -529,6 +715,7 @@
       posXValDisplay.textContent = `${posX}%`;
       posYValDisplay.textContent = `${posY}%`;
 
+      // Date & Calendar updates
       const selectedDate = new Date(eventDateInput.value + 'T00:00:00');
       if (!isNaN(selectedDate)) {
         const day = selectedDate.getDate();
@@ -591,61 +778,69 @@
     });
 
     eventTitleInput.addEventListener('input', updateCard);
+    titleFontSizeInput.addEventListener('input', updateCard);
     titleFontSelect.addEventListener('change', updateCard);
-    wishesFontSelect.addEventListener('change', updateCard);
+
+    eventSubtitleInput.addEventListener('input', updateCard);
+    subtitleMarginTopInput.addEventListener('input', updateCard);
+    subtitleFontSizeInput.addEventListener('input', updateCard);
+    subtitleFontSelect.addEventListener('change', updateCard);
+
+    scriptLineHeightInput.addEventListener('input', updateCard);
+
+    wishesTextInput.addEventListener('input', updateCard);
     wishesFontSizeInput.addEventListener('input', updateCard);
-    wishesAlignSelect.addEventListener('change', updateCard);
+    wishesFontSelect.addEventListener('change', updateCard);
+
     iconSelect.addEventListener('change', updateCard);
     eventDateInput.addEventListener('input', updateCard);
-    wishesTextInput.addEventListener('input', updateCard);
 
     photoZoomInput.addEventListener('input', updateCard);
     photoPosXInput.addEventListener('input', updateCard);
     photoPosYInput.addEventListener('input', updateCard);
 
-    // High-DPI Standard A4 PDF Export (210mm x 297mm)
-    downloadPdfBtn.addEventListener('click', () => {
+    downloadPdfBtn.addEventListener('click', async () => {
       downloadPdfBtn.textContent = 'Generating A4 PDF...';
       downloadPdfBtn.disabled = true;
 
-      // Render canvas at 3x scale for crisp print resolution
-      const scale = 3;
-      const width = cardCanvas.offsetWidth;
-      const height = cardCanvas.offsetHeight;
+      try {
+        // Guarantee all font glyphs are rendered before taking snapshot
+        await document.fonts.ready;
 
-      domtoimage.toPng(cardCanvas, {
-        width: width * scale,
-        height: height * scale,
-        style: {
-          transform: `scale(${scale})`,
-          transformOrigin: 'top left',
-          width: `${width}px`,
-          height: `${height}px`
-        }
-      }).then(dataUrl => {
+        const scale = 3;
+        const width = cardCanvas.offsetWidth;
+        const height = cardCanvas.offsetHeight;
+
+        const dataUrl = await domtoimage.toPng(cardCanvas, {
+          width: width * scale,
+          height: height * scale,
+          style: {
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            width: `${width}px`,
+            height: `${height}px`
+          }
+        });
+
         const { jsPDF } = window.jspdf;
         
-        // Exact standard A4 dimensions in millimeters
         const pdf = new jsPDF({
           orientation: 'portrait',
           unit: 'mm',
           format: 'a4'
         });
 
-        // Fit image perfectly onto standard A4 sheet (210mm x 297mm)
         pdf.addImage(dataUrl, 'PNG', 0, 0, 210, 297);
         
         const filename = (eventTitleInput.value || 'card').toLowerCase().replace(/\s+/g, '_');
         pdf.save(`${filename}_A4.pdf`);
-
-        downloadPdfBtn.textContent = 'Download A4 PDF';
-        downloadPdfBtn.disabled = false;
-      }).catch(err => {
+      } catch (err) {
         console.error(err);
-        alert('Could not export PDF. Ensure images are locally uploaded or CORS-enabled.');
+        alert('Could not export PDF.');
+      } finally {
         downloadPdfBtn.textContent = 'Download A4 PDF';
         downloadPdfBtn.disabled = false;
-      });
+      }
     });
 
     updateCard();
