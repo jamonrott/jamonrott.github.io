@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Customizable Event Card</title>
+  <title>Calendar Photo Maker</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=Great+Vibes&family=Montserrat:wght@400;700;800&family=Pacifico&family=Playfair+Display:ital,wght@1,600&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <!-- DOM-to-Image & jsPDF for high-res PDF export -->
@@ -199,9 +199,9 @@
       left: 50%;
       width: 100%;
       height: 100%;
-      object-fit: contain; /* Preserves complete image uncropped */
+      object-fit: contain;
       transform-origin: center center;
-      pointer-events: none; /* Prevents default browser image drag */
+      pointer-events: none;
     }
 
     /* Date & Sub-title Badge */
@@ -267,7 +267,7 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
-	  padding-bottom: 10px;
+      padding-bottom: 10px;
     }
     
     .card-icon {
@@ -448,7 +448,7 @@
           Zoom 
           <span id="zoomVal">1.0x</span>
         </label>
-        <input type="range" id="photoZoom" min="0.2" max="5.0" step="0.05" value="1.5">
+        <input type="range" id="photoZoom" min="0.2" max="5.0" step="0.05" value="1">
       </div>
 
       <div class="input-group">
@@ -526,6 +526,8 @@
   </div>
 
   <script>
+    const STORAGE_KEY = 'savedCustomFont';
+
     const fontOptions = [
       { label: "Arial", value: "Arial, Helvetica, sans-serif" },
       { label: "Georgia", value: "Georgia, serif" },
@@ -558,9 +560,49 @@
       });
     }
 
-    populateFontDropdowns();
+    // Dynamic @font-face injection helper
+    function injectCustomFont(fontName, dataUrl, format, fontLabel) {
+      let customStyles = document.getElementById('dynamicCustomFonts');
+      if (!customStyles) {
+        customStyles = document.createElement('style');
+        customStyles.id = 'dynamicCustomFonts';
+        document.head.appendChild(customStyles);
+      }
 
-    // Custom Font Upload & Base64 Style Injection
+      const fontRule = `
+        @font-face {
+          font-family: '${fontName}';
+          src: url('${dataUrl}') format('${format}');
+          font-weight: normal;
+          font-style: normal;
+        }
+      `;
+      customStyles.appendChild(document.createTextNode(fontRule));
+
+      const fontVal = `'${fontName}', sans-serif`;
+
+      if (!fontOptions.some(opt => opt.value === fontVal)) {
+        fontOptions.unshift({ label: fontLabel, value: fontVal });
+        populateFontDropdowns();
+      }
+
+      return fontVal;
+    }
+
+    // Load persisted font from localStorage on initial page load
+    function loadSavedCustomFont() {
+      const savedFont = localStorage.getItem(STORAGE_KEY);
+      if (!savedFont) return;
+
+      try {
+        const { fontName, dataUrl, format, fontLabel } = JSON.parse(savedFont);
+        injectCustomFont(fontName, dataUrl, format, fontLabel);
+      } catch (e) {
+        console.error('Error loading saved custom font:', e);
+      }
+    }
+
+    // Custom Font Upload & Base64 Persistence
     const customFontUpload = document.getElementById('customFontUpload');
 
     customFontUpload.addEventListener('change', (e) => {
@@ -578,33 +620,17 @@
         else if (file.name.endsWith('.woff')) format = 'woff';
         else if (file.name.endsWith('.woff2')) format = 'woff2';
 
-        let customStyles = document.getElementById('dynamicCustomFonts');
-        if (!customStyles) {
-          customStyles = document.createElement('style');
-          customStyles.id = 'dynamicCustomFonts';
-          document.head.appendChild(customStyles);
-        }
+        injectCustomFont(fontName, dataUrl, format, file.name);
 
-        const fontRule = `
-          @font-face {
-            font-family: '${fontName}';
-            src: url('${dataUrl}') format('${format}');
-            font-weight: normal;
-            font-style: normal;
-          }
-        `;
-        customStyles.appendChild(document.createTextNode(fontRule));
+        // Persist file metadata & base64 content
+        try {
+          const fontPayload = { fontName, dataUrl, format, fontLabel: file.name };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(fontPayload));
+        } catch (err) {
+          console.warn('Font file too large for localStorage:', err);
+        }
 
         await document.fonts.ready;
-
-        const fontVal = `'${fontName}', sans-serif`;
-        const fontLabel = file.name;
-
-        if (!fontOptions.some(opt => opt.value === fontVal)) {
-          fontOptions.unshift({ label: fontLabel, value: fontVal });
-          populateFontDropdowns();
-        }
-
         updateCard();
       };
 
@@ -667,9 +693,13 @@
     const calendarGrid = document.getElementById('calendarGrid');
 
     // Default font values
+    populateFontDropdowns();
     titleFontSelect.value = "'Great Vibes', cursive";
     subtitleFontSelect.value = "Arial, Helvetica, sans-serif";
     wishesFontSelect.value = "Arial, Helvetica, sans-serif";
+
+    // Restore saved font into font lists without overriding dropdown selections
+    loadSavedCustomFont();
 
     const monthNames = ["January", "February", "March", "April", "May", "June", 
                         "July", "August", "September", "October", "November", "December"];
@@ -857,7 +887,6 @@
     let startX = 0, startY = 0;
     let initialPosX = 50, initialPosY = 50;
 
-    // Mouse Drag Start
     photoFrame.addEventListener('mousedown', (e) => {
       isDragging = true;
       startX = e.clientX;
@@ -867,7 +896,6 @@
       photoFrame.style.cursor = 'grabbing';
     });
 
-    // Drag Movement
     window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
       e.preventDefault();
@@ -884,7 +912,6 @@
       updateCard();
     });
 
-    // Drag Stop
     window.addEventListener('mouseup', () => {
       if (isDragging) {
         isDragging = false;
@@ -892,7 +919,7 @@
       }
     });
 
-    // Mobile Touch Drag Support
+    // Touch Support
     photoFrame.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
         isDragging = true;
@@ -922,7 +949,7 @@
       isDragging = false;
     });
 
-    // Mouse Wheel Zoom Inside Photo Frame
+    // Mouse Wheel Zoom
     photoFrame.addEventListener('wheel', (e) => {
       e.preventDefault();
       let currentZoom = parseFloat(photoZoomInput.value) || 1.0;
@@ -942,7 +969,7 @@
     photoFrame.addEventListener('dblclick', () => {
       photoPosX = 50;
       photoPosY = 50;
-      photoZoomInput.value = 1.5;
+      photoZoomInput.value = 1.0;
       photoRotateInput.value = 0;
       updateCard();
     });
@@ -985,7 +1012,7 @@
         console.error(err);
         alert('Could not export PDF.');
       } finally {
-        downloadPdfBtn.textContent = 'Download A4 PDF';
+        downloadPdfBtn.textContent = 'Download';
         downloadPdfBtn.disabled = false;
       }
     });
